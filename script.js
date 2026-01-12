@@ -184,8 +184,6 @@ function initTypeItTeks1() {
     try {
       typeItInstances.teks1 = new TypeIt("#teks1", {
         strings: [
-          "Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia.", 
-          " ", 
           "Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya.", 
           " ", 
           "Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa.", 
@@ -492,4 +490,5 @@ function confetti() {
 
   if (!onlyOnKonami) poof();
 }
+
 
