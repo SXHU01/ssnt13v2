@@ -1,8 +1,11 @@
 // Fungsi untuk memulai musik
 function playMusic() {
   const music = document.getElementById('background-music');
-  music.play();
+  if (music) {
+    music.play().catch(e => console.log('Music play failed:', e));
+  }
 }
+
 window.addEventListener('DOMContentLoaded', function() {
   playMusic();
 });
@@ -15,11 +18,14 @@ const timer = document.getElementById('timer');
 // Flag untuk mencegah multiple clicks
 let canClick = false;
 let currentSlide = 0;
+let typeItInstances = {};
 
 const second = 1000,
   minute = second * 60,    
   hour = minute * 60,
   day = hour * 24;
+
+// Ganti dengan tanggal yang sudah lewat untuk testing, atau sesuaikan
 let countDown = new Date('Jan 7, 2026 00:00:00').getTime(),
   x = setInterval(function () {
     let now = new Date().getTime(),
@@ -34,16 +40,16 @@ let countDown = new Date('Jan 7, 2026 00:00:00').getTime(),
       clearInterval(x);
       _slideSatu();
     }
-  }, second)
+  }, second);
 
 // Global click handler
-document.body.addEventListener('click', function(e) {
+function handleGlobalClick(e) {
   if (!canClick) return;
   
   // Jangan proses jika klik pada button
   if (e.target.tagName === 'BUTTON') return;
   
-  canClick = false; // Disable clicking sementara
+  canClick = false;
   
   if (currentSlide === 1) {
     _slideDua();
@@ -52,7 +58,10 @@ document.body.addEventListener('click', function(e) {
   } else if (currentSlide === 3) {
     transitionToSlideEmpat();
   }
-});
+}
+
+document.body.addEventListener('click', handleGlobalClick);
+document.body.addEventListener('touchend', handleGlobalClick);
 
 const _slideSatu = function () {
   const tap1 = document.getElementById('tap1');
@@ -81,6 +90,12 @@ const _slideDua = function () {
   }, 1000);
 
   slideDua.classList.remove('d-none');
+  
+  // Pastikan TypeIt untuk teks1 dijalankan
+  if (!typeItInstances.teks1) {
+    initTypeItTeks1();
+  }
+  
   setTimeout(function () {
     tap2.classList.remove('d-none');
     canClick = true;
@@ -108,6 +123,11 @@ const _slideTiga = function () {
 
   slideTiga.classList.remove('d-none');
   
+  // Pastikan TypeIt untuk teks2 dijalankan
+  if (!typeItInstances.teks2) {
+    initTypeItTeks2();
+  }
+  
   setTimeout(function () {
     tap3.classList.remove('d-none');
     canClick = true;
@@ -121,7 +141,7 @@ const transitionToSlideEmpat = function() {
   
   slideTiga.classList.remove('animate__delay-2s', 'animate__slow');
   slideTiga.classList.replace('animate__fadeInRight', 'animate__fadeOut');
-  tap3.remove();
+  if (tap3) tap3.remove();
   
   setTimeout(function () {
     slideTiga.remove();
@@ -136,7 +156,7 @@ function getRandomPosition(element) {
   var randomX = Math.floor(Math.random() * 500);
   var randomY = Math.floor(Math.random() * y);
   return [randomX, randomY];
-};
+}
 
 const _slideEmpat = function () {
   const slideEmpat = document.getElementById('slideEmpat');
@@ -167,6 +187,11 @@ const _slideLima = function () {
   slideLima.classList.remove('d-none');
   const trims = document.getElementById('trims');
 
+  // Pastikan TypeIt untuk trims dijalankan
+  if (!typeItInstances.trims) {
+    initTypeItTrims();
+  }
+
   setTimeout(() => {
     trims.classList.remove('d-none');
   }, 1000);
@@ -188,27 +213,94 @@ const _slideEnam = function () {
   }
 };
 
-new TypeIt("#teks1", {
-  strings: ["Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia.", " ", "Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya.", " ", "Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa.", " ", "Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu."],
-  startDelay: 4000,
-  speed: 75,
-  waitUntilVisible: true
-}).go();
+// Inisialisasi TypeIt dengan pengecekan
+function initTypeItTeks1() {
+  if (typeof TypeIt !== 'undefined') {
+    try {
+      typeItInstances.teks1 = new TypeIt("#teks1", {
+        strings: [
+          "Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia.", 
+          " ", 
+          "Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya.", 
+          " ", 
+          "Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa.", 
+          " ", 
+          "Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu."
+        ],
+        startDelay: 1000,
+        speed: 75,
+        waitUntilVisible: true
+      }).go();
+    } catch (e) {
+      console.error('TypeIt teks1 error:', e);
+      // Fallback: tampilkan teks langsung
+      document.getElementById('teks1').innerHTML = "Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia. Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya. Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa. Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu.";
+    }
+  } else {
+    console.error('TypeIt library not loaded');
+    document.getElementById('teks1').innerHTML = "Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia. Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya. Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa. Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu.";
+  }
+}
 
-new TypeIt("#teks2", {
-  strings: ["Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara.", " ", "Tetaplah bersinar dengan caramu sendiri, Cantik...", "Semoga bahagia selalu menetap di hatimu, sebagaimana kamu selalu menetap dalam doa-doaku.", " ", "barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini.", " ", "- Wish all you the best"],
-  startDelay: 4000,
-  speed: 75,
-  waitUntilVisible: true
-}).go();
+function initTypeItTeks2() {
+  if (typeof TypeIt !== 'undefined') {
+    try {
+      typeItInstances.teks2 = new TypeIt("#teks2", {
+        strings: [
+          "Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara.", 
+          " ", 
+          "Tetaplah bersinar dengan caramu sendiri, Cantik...", 
+          "Semoga bahagia selalu menetap di hatimu, sebagaimana kamu selalu menetap dalam doa-doaku.", 
+          " ", 
+          "barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini.", 
+          " ", 
+          "- Wish all you the best"
+        ],
+        startDelay: 1000,
+        speed: 75,
+        waitUntilVisible: true
+      }).go();
+    } catch (e) {
+      console.error('TypeIt teks2 error:', e);
+      document.getElementById('teks2').innerHTML = "Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara. Tetaplah bersinar dengan caramu sendiri, Cantik... Semoga bahagia selalu menetap di hatimu, sebagaimana kamu selalu menetap dalam doa-doaku. barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini. - Wish all you the best";
+    }
+  } else {
+    console.error('TypeIt library not loaded');
+    document.getElementById('teks2').innerHTML = "Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara. Tetaplah bersinar dengan caramu sendiri, Cantik... Semoga bahagia selalu menetap di hatimu, sebagaimana kamu selalu menetap dalam doa-doaku. barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini. - Wish all you the best";
+  }
+}
 
-new TypeIt("#trims", {
-  strings: ["I Love You.&#129505;"],
-  startDelay: 2000,
-  speed: 150,
-  loop: false,
-  waitUntilVisible: true,
-}).go();
+function initTypeItTrims() {
+  if (typeof TypeIt !== 'undefined') {
+    try {
+      typeItInstances.trims = new TypeIt("#trims", {
+        strings: ["I Love You.&#129505;"],
+        startDelay: 2000,
+        speed: 150,
+        loop: false,
+        waitUntilVisible: true,
+      }).go();
+    } catch (e) {
+      console.error('TypeIt trims error:', e);
+      document.getElementById('trims').innerHTML = "I Love You.&#129505;";
+    }
+  } else {
+    document.getElementById('trims').innerHTML = "I Love You.&#129505;";
+  }
+}
+
+// Panggil TypeIt initialization setelah window load
+window.addEventListener('load', function() {
+  // Tunggu sebentar untuk memastikan semua library loaded
+  setTimeout(function() {
+    // Pre-initialize semua TypeIt instances tapi jangan go() dulu
+    if (typeof TypeIt !== 'undefined') {
+      console.log('TypeIt library loaded successfully');
+    } else {
+      console.error('TypeIt library failed to load');
+    }
+  }, 500);
+});
 
 'use strict';
 
@@ -291,12 +383,10 @@ function confetti() {
     return 'rgb(' + r + ',' + g + ',' + b + ')';
   }
 
-  // Cosine interpolation
   function interpolation(a, b, t) {
     return (1 - cos(PI * t)) / 2 * (b - a) + a;
   }
 
-  // Create a 1D Maximal Poisson Disc over [0, 1]
   var radius = 1 / eccentricity,
     radius2 = radius + radius;
 
