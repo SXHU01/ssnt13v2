@@ -190,8 +190,6 @@ function initTypeItTeks1() {
           " ", 
           "Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa.", 
           " ", 
-          "Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu.",
-          " ",
           "Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara.",
           " ",
           "Tetaplah bersinar dengan caramu sendiri, Cantik... Semoga bahagia selalu menetap di hatimu.",
@@ -494,3 +492,4 @@ function confetti() {
 
   if (!onlyOnKonami) poof();
 }
+
