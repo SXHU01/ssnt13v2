@@ -156,7 +156,7 @@ new TypeIt("#teks1", {
 
 new TypeIt("#teks2", {
   strings: ["Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara.", " ", "Tetaplah bersinar dengan caramu sendiri, Cantik...", "Semoga bahagia selalu menetap di hatimu, sebagaimana kamu selalu menetap dalam doa-doaku.", " ", "barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini.", " ", "- Wish all you the best"],
-  startDelay: 2000,
+  startDelay: 4000,
   speed: 75,
   waitUntilVisible: true
 }).go();
@@ -434,4 +434,5 @@ function confetti() {
   if (!onlyOnKonami) poof();
 
 };
+
 
