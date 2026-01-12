@@ -25,7 +25,6 @@ const second = 1000,
   hour = minute * 60,
   day = hour * 24;
 
-// Ganti dengan tanggal yang sudah lewat untuk testing, atau sesuaikan
 let countDown = new Date('Jan 7, 2026 00:00:00').getTime(),
   x = setInterval(function () {
     let now = new Date().getTime(),
@@ -54,8 +53,6 @@ function handleGlobalClick(e) {
   if (currentSlide === 1) {
     _slideDua();
   } else if (currentSlide === 2) {
-    transitionToSlideTiga();
-  } else if (currentSlide === 3) {
     transitionToSlideEmpat();
   }
 }
@@ -100,10 +97,10 @@ const _slideDua = function () {
     tap2.classList.remove('d-none');
     canClick = true;
     currentSlide = 2;
-  }, 40000);
+  }, 50000);
 };
 
-const transitionToSlideTiga = function() {
+const transitionToSlideEmpat = function() {
   const slideDua = document.getElementById('slideDua');
   const tap2 = document.getElementById('tap2');
   
@@ -113,40 +110,8 @@ const transitionToSlideTiga = function() {
   
   setTimeout(function () {
     slideDua.remove();
-    _slideTiga();
-  }, 1000);
-};
-
-const _slideTiga = function () {
-  const tap3 = document.getElementById('tap3');
-  const slideTiga = document.getElementById('slideTiga');
-
-  slideTiga.classList.remove('d-none');
-  
-  // Pastikan TypeIt untuk teks2 dijalankan
-  if (!typeItInstances.teks2) {
-    initTypeItTeks2();
-  }
-  
-  setTimeout(function () {
-    tap3.classList.remove('d-none');
-    canClick = true;
-    currentSlide = 3;
-  }, 43000);
-}
-
-const transitionToSlideEmpat = function() {
-  const slideTiga = document.getElementById('slideTiga');
-  const tap3 = document.getElementById('tap3');
-  
-  slideTiga.classList.remove('animate__delay-2s', 'animate__slow');
-  slideTiga.classList.replace('animate__fadeInRight', 'animate__fadeOut');
-  if (tap3) tap3.remove();
-  
-  setTimeout(function () {
-    slideTiga.remove();
     _slideEmpat();
-    currentSlide = 4;
+    currentSlide = 3;
   }, 1000);
 };
 
@@ -225,7 +190,15 @@ function initTypeItTeks1() {
           " ", 
           "Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa.", 
           " ", 
-          "Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu."
+          "Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu.",
+          " ",
+          "Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara.",
+          " ",
+          "Tetaplah bersinar dengan caramu sendiri, Cantik... Semoga bahagia selalu menetap di hatimu.",
+          " ",
+          "barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini.",
+          " ",
+          "- Wish all you the best"
         ],
         startDelay: 1000,
         speed: 75,
@@ -234,39 +207,11 @@ function initTypeItTeks1() {
     } catch (e) {
       console.error('TypeIt teks1 error:', e);
       // Fallback: tampilkan teks langsung
-      document.getElementById('teks1').innerHTML = "Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia. Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya. Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa. Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu.";
+      document.getElementById('teks1').innerHTML = "Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia.<br><br>Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya.<br><br>Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa.<br><br>Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu.<br><br>Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara.<br><br>Tetaplah bersinar dengan caramu sendiri, Cantik... Semoga bahagia selalu menetap di hatimu.<br><br>barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini.<br><br>- Wish all you the best";
     }
   } else {
     console.error('TypeIt library not loaded');
-    document.getElementById('teks1').innerHTML = "Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia. Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya. Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa. Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu.";
-  }
-}
-
-function initTypeItTeks2() {
-  if (typeof TypeIt !== 'undefined') {
-    try {
-      typeItInstances.teks2 = new TypeIt("#teks2", {
-        strings: [
-          "Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara.", 
-          " ", 
-          "Tetaplah bersinar dengan caramu sendiri, Cantik.", 
-          "Semoga bahagia selalu menetap di hatimu, sebagaimana kamu selalu menetap dalam doa-doaku.", 
-          " ", 
-          "barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini.", 
-          " ", 
-          "- Wish all you the best"
-        ],
-        startDelay: 1000,
-        speed: 75,
-        waitUntilVisible: true
-      }).go();
-    } catch (e) {
-      console.error('TypeIt teks2 error:', e);
-      document.getElementById('teks2').innerHTML = "Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara. Tetaplah bersinar dengan caramu sendiri, Cantik... Semoga bahagia selalu menetap di hatimu, sebagaimana kamu selalu menetap dalam doa-doaku. barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini. - Wish all you the best";
-    }
-  } else {
-    console.error('TypeIt library not loaded');
-    document.getElementById('teks2').innerHTML = "Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara. Tetaplah bersinar dengan caramu sendiri, Cantik... Semoga bahagia selalu menetap di hatimu, sebagaimana kamu selalu menetap dalam doa-doaku. barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini. - Wish all you the best";
+    document.getElementById('teks1').innerHTML = "Di hari ini, semesta seolah berbisik lembut, merayakan tanggal saat kamu pertama kali menyapa dunia.<br><br>Selamat ulang tahun untuk Sutanti, nama yang selalu membawa ketenangan di setiap sebutannya.<br><br>Di mataku, kamu adalah jiwa yang selalu mempesona, si Cantik yang kehadirannya luar biasa.<br><br>Terima kasih telah menjadi alasan di balik senyumku dan warna di setiap hariku yang sempat abu-abu.<br><br>Semoga setahun ke depan, semesta menjagamu dengan pelukan yang paling hangat, menghujanimu dengan tawa, dan menjauhkanmu dari segala lara.<br><br>Tetaplah bersinar dengan caramu sendiri, Cantik... Semoga bahagia selalu menetap di hatimu.<br><br>barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini.<br><br>- Wish all you the best";
   }
 }
 
@@ -549,4 +494,3 @@ function confetti() {
 
   if (!onlyOnKonami) poof();
 }
-
