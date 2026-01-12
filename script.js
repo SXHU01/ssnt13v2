@@ -12,6 +12,10 @@ const content = document.getElementById('content');
 const footer = document.getElementsByTagName('footer')[0];
 const timer = document.getElementById('timer');
 
+// Flag untuk mencegah multiple clicks
+let canClick = false;
+let currentSlide = 0;
+
 const second = 1000,
   minute = second * 60,    
   hour = minute * 60,
@@ -32,15 +36,33 @@ let countDown = new Date('Jan 7, 2026 00:00:00').getTime(),
     }
   }, second)
 
+// Global click handler
+document.body.addEventListener('click', function(e) {
+  if (!canClick) return;
+  
+  // Jangan proses jika klik pada button
+  if (e.target.tagName === 'BUTTON') return;
+  
+  canClick = false; // Disable clicking sementara
+  
+  if (currentSlide === 1) {
+    _slideDua();
+  } else if (currentSlide === 2) {
+    transitionToSlideTiga();
+  } else if (currentSlide === 3) {
+    transitionToSlideEmpat();
+  }
+});
+
 const _slideSatu = function () {
   const tap1 = document.getElementById('tap1');
   const slideSatu = document.getElementById('slideSatu');
   slideSatu.classList.remove('d-none');
+  
   setTimeout(function () {
     tap1.classList.remove('d-none');
-    document.body.addEventListener('click', function () {
-      _slideDua();
-    })
+    canClick = true;
+    currentSlide = 1;
   }, 7000);
 };
 
@@ -61,16 +83,23 @@ const _slideDua = function () {
   slideDua.classList.remove('d-none');
   setTimeout(function () {
     tap2.classList.remove('d-none');
-    document.body.addEventListener('click', function () {
-      slideDua.classList.replace('animate__zoomInDown', 'animate__fadeOutLeft');
-      slideDua.classList.remove('animate__delay-2s', 'animate__slow');
-      tap2.classList.add('d-none');
-      setTimeout(function () {
-        slideDua.remove();
-        _slideTiga();
-      }, 1000);
-    })
+    canClick = true;
+    currentSlide = 2;
   }, 40000);
+};
+
+const transitionToSlideTiga = function() {
+  const slideDua = document.getElementById('slideDua');
+  const tap2 = document.getElementById('tap2');
+  
+  slideDua.classList.replace('animate__zoomInDown', 'animate__fadeOutLeft');
+  slideDua.classList.remove('animate__delay-2s', 'animate__slow');
+  tap2.classList.add('d-none');
+  
+  setTimeout(function () {
+    slideDua.remove();
+    _slideTiga();
+  }, 1000);
 };
 
 const _slideTiga = function () {
@@ -78,19 +107,28 @@ const _slideTiga = function () {
   const slideTiga = document.getElementById('slideTiga');
 
   slideTiga.classList.remove('d-none');
+  
   setTimeout(function () {
     tap3.classList.remove('d-none');
-    document.body.addEventListener('click', function () {
-      slideTiga.classList.remove('animate__delay-2s', 'animate__slow');
-      slideTiga.classList.replace('animate__fadeInRight', 'animate__fadeOut');
-      tap3.remove();
-      setTimeout(function () {
-        slideTiga.remove();
-        _slideEmpat();
-      }, 1000);
-    })
+    canClick = true;
+    currentSlide = 3;
   }, 43000);
 }
+
+const transitionToSlideEmpat = function() {
+  const slideTiga = document.getElementById('slideTiga');
+  const tap3 = document.getElementById('tap3');
+  
+  slideTiga.classList.remove('animate__delay-2s', 'animate__slow');
+  slideTiga.classList.replace('animate__fadeInRight', 'animate__fadeOut');
+  tap3.remove();
+  
+  setTimeout(function () {
+    slideTiga.remove();
+    _slideEmpat();
+    currentSlide = 4;
+  }, 1000);
+};
 
 function getRandomPosition(element) {
   var x = document.body.offsetHeight - element.clientHeight;
@@ -105,12 +143,14 @@ const _slideEmpat = function () {
   const btn = document.getElementsByTagName('button');
   slideEmpat.classList.remove('d-none');
 
-  btn[0].addEventListener('click', function () {
+  btn[0].addEventListener('click', function (e) {
+    e.stopPropagation();
     var xy = getRandomPosition(slideEmpat);
     slideEmpat.style.top = xy[0] + 'px';
   });
 
-  btn[1].addEventListener('click', function () {
+  btn[1].addEventListener('click', function (e) {
+    e.stopPropagation();
     slideEmpat.classList.replace('animate__fadeInDown', 'animate__bounceOut');
     slideEmpat.classList.remove('animate__delay-2s');
     setTimeout(function () {
@@ -119,7 +159,7 @@ const _slideEmpat = function () {
         _slideLima();
       }, 500);
     }, 1000);
-  })
+  });
 };
 
 const _slideLima = function () {
@@ -134,7 +174,6 @@ const _slideLima = function () {
   slideLima.addEventListener('animationend', () => {
     slideLima.classList.add('animate__delay-3s')
     slideLima.classList.replace('animate__bounceIn', 'animate__fadeOut');
-    // Tidak menghapus trims, hanya menghapus slideLima
     setTimeout(() => {
       slideLima.remove();
       _slideEnam();
@@ -144,7 +183,9 @@ const _slideLima = function () {
 
 const _slideEnam = function () {
   const slideEnam = document.getElementById('slideEnam');
-  slideEnam.classList.remove('d-none');
+  if (slideEnam) {
+    slideEnam.classList.remove('d-none');
+  }
 };
 
 new TypeIt("#teks1", {
@@ -260,8 +301,6 @@ function confetti() {
     radius2 = radius + radius;
 
   function createPoisson() {
-    // domain is the set of points which are still available to pick from
-    // D = union{ [d_i, d_i+1] | i is even }
     var domain = [radius, 1 - radius],
       measure = 1 - radius2,
       spline = [0, 1];
@@ -269,7 +308,6 @@ function confetti() {
       var dart = measure * random(),
         i, l, interval, a, b, c, d;
 
-      // Find where dart lies
       for (i = 0, l = domain.length, measure = 0; i < l; i += 2) {
         a = domain[i], b = domain[i + 1], interval = b - a;
         if (dart < measure + interval) {
@@ -282,17 +320,12 @@ function confetti() {
 
       for (i = domain.length - 1; i > 0; i -= 2) {
         l = i - 1, a = domain[l], b = domain[i];
-        // c---d          c---d  Do nothing
-        //   c-----d  c-----d    Move interior
-        //   c--------------d    Delete interval
-        //         c--d          Split interval
-        //       a------b
         if (a >= c && a < d)
-          if (b > d) domain[l] = d; // Move interior (Left case)
-          else domain.splice(l, 2); // Delete interval
+          if (b > d) domain[l] = d;
+          else domain.splice(l, 2);
         else if (a < c && b > c)
-          if (b <= d) domain[i] = c; // Move interior (Right case)
-          else domain.splice(i, 0, c, d); // Split interval
+          if (b <= d) domain[i] = c;
+          else domain.splice(i, 0, c, d);
       }
 
       for (i = 0, l = domain.length, measure = 0; i < l; i += 2)
@@ -311,7 +344,6 @@ function confetti() {
   container.style.overflow = 'visible';
   container.style.zIndex = '9999';
 
-  // Confetto constructor
   function Confetto(theme) {
     this.frame = 0;
     this.outer = document.createElement('div');
@@ -343,7 +375,6 @@ function confetti() {
     outerStyle.left = this.x + 'px';
     outerStyle.top = this.y + 'px';
 
-    // Create the periodic spline
     this.splineX = createPoisson();
     this.splineY = [];
     for (var i = 1, l = this.splineX.length - 1; i < l; ++i)
@@ -356,7 +387,6 @@ function confetti() {
       this.y += this.dy * delta;
       this.theta += this.dTheta * delta;
 
-      // Compute spline and convert to polar
       var phi = this.frame % 7777 / 7777,
         i = 0,
         j = 1;
@@ -377,10 +407,8 @@ function confetti() {
 
   function poof() {
     if (!frame) {
-      // Append the container
       document.body.appendChild(container);
 
-      // Add confetti
       var theme = colorThemes[onlyOnKonami ? colorThemes.length * random() | 0 : 0],
         count = 0;
 
@@ -397,7 +425,6 @@ function confetti() {
         }
       })(0);
 
-      // Start the loop
       var prev = undefined;
       requestAnimationFrame(function loop(timestamp) {
         var delta = prev ? timestamp - prev : 0;
@@ -414,7 +441,6 @@ function confetti() {
         if (timer || confetti.length)
           return frame = requestAnimationFrame(loop);
 
-        // Cleanup
         document.body.removeChild(container);
         frame = undefined;
       });
@@ -432,7 +458,4 @@ function confetti() {
   });
 
   if (!onlyOnKonami) poof();
-
-};
-
-
+}
